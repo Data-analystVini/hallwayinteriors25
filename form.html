@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hallway Interiors - Entry Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f5f2ed;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .form-container {
+            max-width: 700px;
+            margin: 50px auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #5a3e2b;
+            font-weight: 600;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo h1 {
+            font-size: 2rem;
+            color: #5a3e2b;
+        }
+    </style>
+    <script>
+        function toggleFields() {
+            var entryType = document.getElementById("entry_type").value;
+            document.getElementById("purchase_fields").style.display = (entryType === "Purchase") ? "block" : "none";
+            document.getElementById("expense_fields").style.display = (entryType === "Expense") ? "block" : "none";
+            document.getElementById("labour_fields").style.display = (entryType === "Labour") ? "block" : "none";
+        }
+    </script>
+</head>
+<body>
+
+<div class="container">
+    <div class="form-container">
+        <div class="logo">
+            <h1>Hallway Interiors</h1>
+            <p>Project Entry Form</p>
+        </div>
+
+        {% if success %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            ✅ Your entry has been submitted successfully!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+
+        <form action="/submit" method="POST">
+            <div class="mb-3">
+                <label for="entry_type" class="form-label">Entry Type</label>
+                <select class="form-select" id="entry_type" name="entry_type" onchange="toggleFields()" required>
+                    <option value="">-- Select Type --</option>
+                    <option value="Purchase">Purchase</option>
+                    <option value="Expense">Expense</option>
+                    <option value="Labour">Labour</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="date" class="form-label">Date</label>
+                <input type="date" class="form-control" id="date" name="date" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="project_name" class="form-label">Project Name</label>
+                <select class="form-select" id="project_name" name="project_name" required>
+                    <option value="">-- Select Project --</option>
+                    <option value="Project A">Project A</option>
+                    <option value="Project B">Project B</option>
+                    <option value="Project C">Project C</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="amount_by" class="form-label">Amount By</label>
+                <select class="form-select" id="amount_by" name="amount_by" required>
+                    <option value="">-- Select Mode --</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Bank (Cheque/Transfer)">Bank (Cheque/Transfer)</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="amount" class="form-label">Enter Amount</label>
+                <input type="number" class="form-control" id="amount" name="amount" step="0.01" required>
+            </div>
+
+            <!-- Purchase Fields -->
+            <div id="purchase_fields" style="display:none;">
+                <div class="mb-3">
+                    <label for="invoice_number" class="form-label">Invoice Number</label>
+                    <input type="text" class="form-control" id="invoice_number" name="invoice_number">
+                </div>
+                <div class="mb-3">
+                    <label for="party_name" class="form-label">Party Name</label>
+                    <input type="text" class="form-control" id="party_name" name="party_name">
+                </div>
+            </div>
+
+            <!-- Expense Fields -->
+            <div id="expense_fields" style="display:none;">
+                <div class="mb-3">
+                    <label for="expense_for" class="form-label">Expense For</label>
+                    <select class="form-select" id="expense_for" name="expense_for">
+                        <option value="">-- Select --</option>
+                        <option value="Travelling">Travelling</option>
+                        <option value="Maintenance">Maintenance</option>
+                        <option value="Refreshment">Refreshment</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <input type="text" class="form-control" id="description" name="description">
+                </div>
+            </div>
+
+            <!-- Labour Fields -->
+            <div id="labour_fields" style="display:none;">
+                <div class="mb-3">
+                    <label for="labour_name" class="form-label">Labour Name</label>
+                    <input type="text" class="form-control" id="labour_name" name="labour_name">
+                </div>
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function validateForm(event) {
+        const entryType = document.getElementById("entry_type").value;
+
+        document.getElementById("invoice_number")?.removeAttribute("required");
+        document.getElementById("party_name")?.removeAttribute("required");
+        document.getElementById("expense_for")?.removeAttribute("required");
+        document.getElementById("description")?.removeAttribute("required");
+        document.getElementById("labour_name")?.removeAttribute("required");
+
+        if (entryType === "Purchase") {
+            document.getElementById("invoice_number").setAttribute("required", true);
+            document.getElementById("party_name").setAttribute("required", true);
+        } else if (entryType === "Expense") {
+            document.getElementById("expense_for").setAttribute("required", true);
+            document.getElementById("description").setAttribute("required", true);
+        } else if (entryType === "Labour") {
+            document.getElementById("labour_name").setAttribute("required", true);
+        }
+    }
+
+    document.querySelector("form").addEventListener("submit", validateForm);
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
